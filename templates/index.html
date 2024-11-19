@@ -1,0 +1,313 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Know Your Drug</title>
+    
+    <!-- Link to Google Fonts for Roboto -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Set background color and font */
+        body {
+            background-color: black;
+            color: white;
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 120px; /* Give space for the fixed top section */
+            overflow-y: auto; /* Allow scrolling */
+        }
+
+        /* Fixed header section at the top */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: black;
+            padding: 20px;
+            z-index: 100;
+            text-align: center;
+        }
+
+        /* Title styling */
+        h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        /* Image upload form styling */
+        form {
+            margin-top: 10px;
+        }
+
+        input[type="file"] {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 5px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #444;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #666;
+        }
+
+        /* Style for the image */
+        img {
+            max-height: 400px;
+            width: auto;
+            display: block;
+            margin: 20px auto;
+        }
+
+        /* Style for the extracted text (drug details section) */
+        .drug-details {
+            text-align: left;
+            font-size: 18px;
+            font-weight: normal;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #222;
+            border-radius: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .drug-details h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .drug-details p {
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        /* Style for sub-sections in the Drug Details */
+        .drug-details .section {
+            margin-bottom: 30px;
+        }
+
+        .drug-details .section h3 {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ffa500; /* Orange color for sub-sections */
+        }
+
+        .drug-details .section p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .drug-details .section p strong {
+            font-weight: bold;
+        }
+
+        .drug-details .section .review_text p {
+            font-size: 14px;
+            font-style: italic;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+
+        /* Truncate the review text */
+        .truncated-text {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .full-text {
+            display: none;
+            white-space: normal;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Fixed Header Section -->
+    <header>
+        <!-- Title -->
+        <h1>Know Your Drug</h1>
+
+        <!-- Drug Search by Text -->
+        <form action="/search" method="POST">
+            <label for="drug_name">Enter Drug Name:</label>
+            <input type="text" name="drug_name" placeholder="Search for a drug..." required>
+            <button type="submit">Search</button>
+        </form>
+
+        <!-- Image Upload Form -->
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+            <label for="file">Choose an image:</label>
+            <input type="file" name="file" accept="image/*">
+            <button type="submit">Upload</button>
+        </form>
+    </header>
+
+    <!-- Display Extracted Text and Image if available -->
+    {% if extracted_text %}
+        <!-- Image -->
+        {% if filename %}
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <img src="{{ url_for('static', filename=filename) }}" alt="Uploaded Image">
+        {% endif %}
+
+        <!-- Drug Details Section -->
+        <div class="drug-details">
+            <h2>Drug Details</h2>
+            
+            <!-- Drug Name -->
+            <div class="section">
+                <h3>Drug Name:</h3>
+                <p>{{ extracted_text }}</p>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="section">
+                <h3>Summary:</h3>
+                <p><strong>Drug Summary:</strong> {{summary_text}}</p>
+            </div>
+
+            <!-- Positive Reviews Section -->
+            {% if positive_review %}
+                <div class="section">
+                    <h3>Positive Reviews</h3>
+                    <div class="review_text">
+                        <p class="truncated-text">{{positive_review_1}}</p>
+                        <p class="full-text">{{positive_review_1}}</p>
+                        <button class="read-more-btn">Read More</button>
+                    </div>
+
+                    {% if positive_review_2 %}
+                        <div class="review_text">
+                            <p class="truncated-text">{{positive_review_2}}</p>
+                            <p class="full-text">{{positive_review_2}}</p>
+                            <button class="read-more-btn">Read More</button>
+                        </div>
+                    {% endif %}
+
+                    {% if positive_review_3 %}
+                        <div class="review_text">
+                            <p class="truncated-text">{{positive_review_3}}</p>
+                            <p class="full-text">{{positive_review_3}}</p>
+                            <button class="read-more-btn">Read More</button>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <!-- Negative Reviews Section -->
+            {% if negative_review %}
+                <div class="section">
+                    <h3>Negative Reviews</h3>
+                    <div class="review_text">
+                        <p class="truncated-text">{{negative_review_1}}</p>
+                        <p class="full-text">{{negative_review_1}}</p>
+                        <button class="read-more-btn">Read More</button>
+                    </div>
+
+                    {% if negative_review_2 %}
+                        <div class="review_text">
+                            <p class="truncated-text">{{negative_review_2}}</p>
+                            <p class="full-text">{{negative_review_2}}</p>
+                            <button class="read-more-btn">Read More</button>
+                        </div>
+                    {% endif %}
+
+                    {% if negative_review_3 %}
+                        <div class="review_text">
+                            <p class="truncated-text">{{negative_review_3}}</p>
+                            <p class="full-text">{{negative_review_3}}</p>
+                            <button class="read-more-btn">Read More</button>
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <!-- Alternatives Section -->
+            <div class="section">
+                <h3>Alternatives:</h3>
+                <p><strong>Alternative drugs to {{ extracted_text }}:</strong> {{alternative_drugs_text}}</p>
+            </div>
+        </div>
+    {% endif %}
+
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const buttons = document.querySelectorAll('.read-more-btn');
+
+        buttons.forEach(function(button) {
+            button.addEventListener('click', function() {
+                console.log('Read More button clicked!');
+                
+                const reviewText = this.closest('.review_text'); // The div containing review text
+                console.log('Review text container:', reviewText);
+                
+                if (reviewText) {
+                    const truncatedText = reviewText.querySelector('.truncated-text');
+                    const fullText = reviewText.querySelector('.full-text');
+                    
+                    console.log('Truncated text element:', truncatedText);
+                    console.log('Full text element:', fullText);
+                    
+                    if (truncatedText && fullText) {
+                        if (truncatedText.style.display === 'none') {
+                            // Show truncated text and hide full text
+                            truncatedText.style.display = 'block';
+                            fullText.style.display = 'none';
+                            this.textContent = 'Read More';
+                            console.log('Text is now truncated, and button says "Read More"');
+                        } else {
+                            // Hide truncated text and show full text
+                            truncatedText.style.display = 'none';
+                            fullText.style.display = 'block';
+                            this.textContent = 'Read Less';
+                            console.log('Text is now expanded, and button says "Read Less"');
+                        }
+                    } else {
+                        console.error('Error: Could not find truncated or full text elements.');
+                    }
+                } else {
+                    console.error('Error: Could not find the review text container.');
+                }
+            });
+        });
+    });
+
+    </script>
+    
+</body>
+</html>
+

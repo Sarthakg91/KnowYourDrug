@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Know Your Drug</title>
+    
+    <!-- Link to Google Fonts for Roboto -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Set background color and font */
+        body {
+            background-color: black;
+            color: white;
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding-top: 120px; /* Give space for the fixed top section */
+            overflow-y: auto; /* Allow scrolling */
+        }
+
+        /* Fixed header section at the top */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: black;
+            padding: 20px;
+            z-index: 100;
+            text-align: center;
+        }
+
+        /* Title styling */
+        h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        /* Image upload form styling */
+        form {
+            margin-top: 10px;
+        }
+
+        input[type="file"] {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 5px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #444;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #666;
+        }
+
+        /* Style for the image */
+        img {
+            max-height: 400px;
+            width: auto;
+            display: block;
+            margin: 20px auto;
+        }
+
+        /* Style for the extracted text (drug details section) */
+        .drug-details {
+            text-align: left;
+            font-size: 18px;
+            font-weight: normal;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #222;
+            border-radius: 10px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .drug-details h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        .drug-details p {
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        /* Style for sub-sections in the Drug Details */
+        .drug-details .section {
+            margin-bottom: 30px;
+        }
+
+        .drug-details .section h3 {
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #ffa500; /* Orange color for sub-sections */
+        }
+
+        .drug-details .section p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .drug-details .section p strong {
+            font-weight: bold;
+        }
+
+        .drug-details .section .review_text p {
+            font-size: 14px;
+            font-style: italic;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Fixed Header Section -->
+    <header>
+        <!-- Title -->
+        <h1>Know Your Drug</h1>
+
+        <!-- Image Upload Form -->
+        <form action="/upload" method="POST" enctype="multipart/form-data">
+            <label for="file">Choose an image:</label>
+            <input type="file" name="file" accept="image/*">
+            <button type="submit">Upload</button>
+        </form>
+    </header>
+
+    <!-- Display Extracted Text and Image if available -->
+    {% if extracted_text %}
+        <!-- Image -->
+        <img src="{{ url_for('static', filename=filename) }}" alt="Uploaded Image">
+
+        <!-- Drug Details Section -->
+        <div class="drug-details">
+            <h2>Drug Details</h2>
+            
+            <!-- Drug Name -->
+            <div class="section">
+                <h3>Drug Name:</h3>
+                <p>{{ extracted_text }}</p>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="section">
+                <h3>Summary:</h3>
+                <p><strong>Drug Summary:</strong> This section can include a brief overview of the drug, its uses, and key features. You can provide a general description here.</p>
+            </div>
+
+            <!-- Positive Reviews Section -->
+            {% if positive_review %}
+                <div class="section">
+                    <h3>Positive Reviews</h3>
+                    <div class="review_text">
+                        <p>{{positive_review_1}}</p>
+                    </div>
+                    {% if positive_review_2 %}
+                        <div class="review_text">
+                            <p>{{positive_review_2}}</p>
+                        </div>
+                    {% endif %}
+                    {% if positive_review_3 %}
+                        <div class="review_text">
+                            <p>{{positive_review_3}}</p>
+                        </div>
+                {% endif %}
+                </div>
+            {% endif %}
+
+
+
+            
+
+            <!-- Positive Reviews Section -->
+            {% if negative_review %}
+                <div class="section">
+                    <h3>Negative Reviews</h3>
+                    <div class="review_text">
+                        <p>{{negative_review_1}}</p>
+                    </div>
+                    {% if negative_review_2 %}
+                        <div class="review_text">
+                            <p>{{negative_review_2}}</p>
+                        </div>
+                    {% endif %}
+                    {% if negative_review_3 %}
+                        <div class="review_text">
+                            <p>{{negative_review_3}}</p>
+                        </div>
+                {% endif %}
+                </div>
+            {% endif %}
+
+            <!-- Alternatives Section -->
+            <div class="section">
+                <h3>Alternatives:</h3>
+                <p><strong>Alternative drugs:</strong> Here, you can list alternative drugs that serve a similar purpose or address the same medical condition.</p>
+            </div>
+        </div>
+    {% endif %}
+    
+</body>
+</html>
